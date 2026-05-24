@@ -1,2 +1,2 @@
-# for-Python-
+# for-Python
 Interactive whiteboard

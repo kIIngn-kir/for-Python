@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Цикл for в Python | Интерактивные примеры с подсказками</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f0f4f8;
+            color: #0f172a;
+            padding: 30px 24px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+
+        .hero {
+            background: linear-gradient(145deg, #ffffff, #f8fafc);
+            border-radius: 36px;
+            padding: 32px 40px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.03);
+            border: 1px solid rgba(124, 58, 237, 0.15);
+        }
+        .hero h1 {
+            font-size: 2.6rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1e40af, #7c3aed, #db2777);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.02em;
+            margin-bottom: 16px;
+        }
+        .hero p {
+            font-size: 1.05rem;
+            color: #334155;
+            max-width: 85%;
+            line-height: 1.5;
+        }
+        .highlight {
+            background: #eef2ff;
+            padding: 2px 8px;
+            border-radius: 24px;
+            font-family: monospace;
+            font-weight: 600;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 26px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(4px);
+            border-radius: 32px;
+            border: 1px solid rgba(203, 213, 225, 0.6);
+            padding: 24px 28px;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+        }
+        .card:hover {
+            background: #ffffff;
+            transform: translateY(-3px);
+            box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.08);
+            border-color: #cbd5e1;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            gap: 12px;
+        }
+        .card h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 5px solid #7c3aed;
+            padding-left: 16px;
+            color: #0f172a;
+            margin: 0;
+        }
+        .lupa-btn {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .lupa-btn:hover {
+            background: #7c3aed;
+            border-color: #7c3aed;
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        .tip-popup {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            max-width: 340px;
+            background: #1e293b;
+            color: #f1f5f9;
+            border-radius: 24px;
+            padding: 18px 22px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            box-shadow: 0 20px 35px -10px rgba(0,0,0,0.3);
+            z-index: 1000;
+            transition: opacity 0.2s, transform 0.2s;
+            font-family: 'Inter', sans-serif;
+            border-left: 5px solid #facc15;
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(15px);
+        }
+        .tip-popup.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .tip-popup strong {
+            color: #facc15;
+        }
+
+        .card-content {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            flex: 1;
+        }
+
+        /* Интерактивная зона с flex-сеткой во избежание слипания */
+        .visual-area {
+            background: #f8fafc;
+            border-radius: 24px;
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        
+        .flex-steps {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .step-card {
+            background: white;
+            border-radius: 16px;
+            padding: 10px 14px;
+            min-width: 75px;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
+        }
+        .step-card.active-step {
+            background: #7c3aed;
+            color: white;
+            border-color: #7c3aed;
+            transform: scale(1.03);
+            box-shadow: 0 6px 14px -6px #7c3aed;
+        }
+        .step-card.highlight-match {
+            background: #fef9c3;
+            border-color: #eab308;
+            color: #713f12;
+        }
+        
+        button {
+            background: white;
+            border: 1px solid #cbd5e1;
+            padding: 10px 22px;
+            border-radius: 60px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
+            transition: 0.15s ease;
+            cursor: pointer;
+            color: #334155;
+            align-self: flex-start;
+        }
+        button:hover {
+            background: #f8fafc;
+            border-color: #94a3b8;
+        }
+        button.primary {
+            background: #2563eb;
+            border: none;
+            color: white;
+            box-shadow: 0 2px 6px rgba(37,99,235,0.15);
+        }
+        button.primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .btn-group button {
+            align-self: auto;
+        }
+        
+        /* Защищенная консоль вывода */
+        .output-console {
+            background: #0f172a;
+            color: #a5f3c3;
+            font-family: 'JetBrains Mono', monospace;
+            padding: 14px 18px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            word-break: break-word;
+            min-height: 56px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .slider-row {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            flex-wrap: wrap;
+            background: #f1f5f9;
+            padding: 10px 20px;
+            border-radius: 60px;
+            font-size: 0.95rem;
+            width: 100%;
+        }
+        .slider-row input[type="range"] {
+            flex: 1;
+            accent-color: #2563eb;
+        }
+
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 16px 20px;
+            border-radius: 20px;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            margin-top: auto; /* Железно прижимает код вниз карточки */
+        }
+
+        footer {
+            background: white;
+            border-radius: 28px;
+            padding: 28px 32px;
+            border: 1px solid #e2e8f0;
+            line-height: 1.6;
+            color: #334155;
+        }
+        
+        @media (max-width: 880px) {
+            .grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 480px) {
+            body { padding: 16px 12px; }
+            .hero { padding: 24px; }
+            .hero h1 { font-size: 1.9rem; }
+            .card { padding: 20px; }
+            .visual-area { padding: 14px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="hero">
+        <h1>🔄 Цикл for в Python: <br>интерактивные примеры + лайфхаки</h1>
+        <p>Цикл <span class="highlight">for</span> — это как конвейер: он берёт каждый предмет из коллекции и делает с ним одно и то же действие. <br>🔍 <strong>Нажми на лупу (🔍) у любого кода — получишь полезный факт или лайфхак!</strong></p>
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <div class="card-header">
+                <h3>📦 1. Как работает for? Список</h3>
+                <button class="lupa-btn" data-tip="🧠 ЛАЙФХАК: Переменная цикла (animal) создаётся прямо в for. После цикла она сохраняет последнее значение — это можно использовать! 🔹 ФАКТ: for работает с любыми итерируемыми объектами: списки, строки, range, даже файлы.">🔍</button>
+            </div>
+            <div class="card-content">
+                <div class="visual-area">
+                    <div id="simpleListContainer" class="flex-steps"></div>
+                    <div class="btn-group">
+                        <button id="animateSimpleForBtn" class="primary">▶️ Запустить цикл</button>
+                        <button id="resetSimpleBtn">🔄 Сбросить</button>
+                    </div>
+                    <div id="simpleOutput" class="output-console">🤖 Нажми "Запустить" → увидишь конвейер в действии.</div>
+                </div>
+                <pre><span style="color:#f472b6">for</span> <span style="color:#7dd3fc">animal</span> <span style="color:#f472b6">in</span> [<span style="color:#a5f3c3">"🐱"</span>, <span style="color:#a5f3c3">"🐶"</span>, <span style="color:#a5f3c3">"🐭"</span>]:
+    <span style="color:#7dd3fc">print</span>(animal)</pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3>🔢 2. range() — повторяем N раз</h3>
+                <button class="lupa-btn" data-tip="💡 ЛАЙФХАК: range(stop) не включает stop! range(5) даст 0,1,2,3,4. 🔹 ФАКТ: range может быть с шагом: range(2,10,2) → 2,4,6,8. Экономит память, не создаёт список.">🔍</button>
+            </div>
+            <div class="card-content">
+                <div class="visual-area">
+                    <div class="slider-row">
+                        <span>Повторить: N = </span>
+                        <input type="range" id="rangeCount" min="1" max="8" value="5">
+                        <span id="rangeCountValue" style="font-weight: 700; color: #2563eb;">5</span>
+                        <button id="runRangeAnimBtn" class="primary" style="padding: 6px 14px;">▶️ Старт</button>
+                    </div>
+                    <div id="rangeStepsContainer" class="flex-steps"></div>
+                    <div id="rangeOutputText" class="output-console">🤖 Настрой ползунок и нажми Старт.</div>
+                </div>
+                <pre><span style="color:#f472b6">for</span> i <span style="color:#f472b6">in</span> <span style="color:#7dd3fc">range</span>(<span style="color:#a5f3c3">5</span>):
+    <span style="color:#7dd3fc">print</span>(<span style="color:#a5f3c3">"Привет"</span>, i)</pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3>⏸️ 3. Управление: continue и break</h3>
+                <button class="lupa-btn" data-tip="⚡ ЛАЙФХАК: break полностью выходит из цикла, continue — только текущий шаг. Используй continue для фильтрации, break — для досрочного поиска. 🔹 ФАКТ: else после for выполняется, если не было break!">🔍</button>
+            </div>
+            <div class="card-content">
+                <div class="visual-area">
+                    <div id="controlStepsContainer" class="flex-steps"></div>
+                    <div class="btn-group">
+                        <button id="continueDemoBtn" class="primary">🔄 Режим continue</button>
+                        <button id="breakDemoBtn" class="primary">⛔ Режим break</button>
+                    </div>
+                    <div id="controlOutput" class="output-console">🤖 Выбери режим симуляции выше.</div>
+                </div>
+                <pre><span style="color:#f472b6">for</span> num <span style="color:#f472b6">in</span> <span style="color:#7dd3fc">range</span>(1, 6):
+    <span style="color:#f472b6">if</span> num == 3:
+        <span style="color:#f472b6">continue</span>   <span style="color:#94a3b8"># или break</span>
+    <span style="color:#7dd3fc">print</span>(num)</pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3>🔍 4. if внутри for: фильтр</h3>
+                <button class="lupa-btn" data-tip="🎯 ЛАЙФХАК: комбинируй for и if для фильтрации данных. В одну строку: [x for x in numbers if x%2==0] — генератор списка! 🔹 ФАКТ: условия внутри цикла не замедляют его — Python оптимизирует.">🔍</button>
+            </div>
+            <div class="card-content">
+                <div class="visual-area">
+                    <div id="filterStepsContainer" class="flex-steps"></div>
+                    <button id="runFilterAnimBtn" class="primary">🎯 Показать фильтрацию (чётные)</button>
+                    <div id="filterOutput" class="output-console">🤖 Нажми на кнопку для запуска фильтрации массива.</div>
+                </div>
+                <pre>numbers = [3, 8, 11, 14, 5, 20]
+<span style="color:#f472b6">for</span> n <span style="color:#f472b6">in</span> numbers:
+    <span style="color:#f472b6">if</span> n % 2 == 0:
+        <span style="color:#7dd3fc">print</span>(n, <span style="color:#a5f3c3">"чётное!"</span>)</pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3>🧮 5. Накопление суммы</h3>
+                <button class="lupa-btn" data-tip="📊 ЛАЙФХАК: total = 0 вне цикла — классический аккумулятор. Можно считать сумму, произведение, количество. 🔹 СОВЕТ: для суммы используй встроенную sum(), но полезно понимать логику цикла!">🔍</button>
+            </div>
+            <div class="card-content">
+                <div class="visual-area">
+                    <div id="sumStepsContainer" class="flex-steps"></div>
+                    <button id="runSumAnimBtn" class="primary">💰 Вычислить сумму</button>
+                    <div id="sumOutput" class="output-console">🤖 Нажми для пошагового суммирования элементов.</div>
+                </div>
+                <pre>numbers = [4, 7, 2, 9, 5]
+total = 0
+<span style="color:#f472b6">for</span> val <span style="color:#f472b6">in</span> numbers:
+    total += val
+<span style="color:#7dd3fc">print</span>(<span style="color:#a5f3c3">"Сумма ="</span>, total)</pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3>📝 6. Цикл по строке</h3>
+                <button class="lupa-btn" data-tip="🔤 ЛАЙФХАК: строка — это последовательность символов. for letter in 'hello': — перебирает буквы. 🔹 ФАКТ: можно проверить наличие символа: if 'a' in word — это работает благодаря циклу внутри!">🔍</button>
+            </div>
+            <div class="card-content">
+                <div class="visual-area">
+                    <div class="btn-group" style="width: 100%;">
+                        <input type="text" id="userWord" value="Python" placeholder="Введите слово" style="flex:1; padding:10px 16px; border-radius:60px; border:1px solid #cbd5e1; font-family: inherit; font-size: 0.9rem;">
+                        <button id="runStringAnimBtn" class="primary">🔡 Пройти по буквам</button>
+                    </div>
+                    <div id="stringStepsContainer" class="flex-steps"></div>
+                    <div id="stringOutput" class="output-console">🤖 Введи слово и запусти посимвольный перебор.</div>
+                </div>
+                <pre>word = <span style="color:#a5f3c3">"Python"</span>
+<span style="color:#f472b6">for</span> letter <span style="color:#f472b6">in</span> word:
+    <span style="color:#7dd3fc">print</span>(letter)</pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3>🎯 7. Поиск элемента (for..else)</h3>
+                <button class="lupa-btn" data-tip="🚀 ЛАЙФХАК: for..else — редкая, но полезная фишка. else выполняется, если break не сработал. Идеально для поиска! 🔹 ФАКТ: многие не знают про else у циклов — используй, чтобы не создавать флаг-переменные.">🔍</button>
+            </div>
+            <div class="card-content">
+                <div class="visual-area">
+                    <button id="searchBtn" class="primary">🔎 Запустить поиск числа 42</button>
+                    <div id="searchOutput" class="output-console">🤖 Нажми для проверки работы блока else в цикле.</div>
+                </div>
+                <pre>data = [10, 23, 42, 55, 7]
+<span style="color:#f472b6">for</span> num <span style="color:#f472b6">in</span> data:
+    <span style="color:#f472b6">if</span> num == 42:
+        <span style="color:#7dd3fc">print</span>(<span style="color:#a5f3c3">"Нашли!"</span>)
+        <span style="color:#f472b6">break</span>
+<span style="color:#f472b6">else</span>:
+    <span style="color:#7dd3fc">print</span>(<span style="color:#a5f3c3">"Не нашли"</span>)</pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3>🗂️ 8. Вложенные циклы for</h3>
+                <button class="lupa-btn" data-tip="🌀 ЛАЙФХАК: вложенный цикл выполняется полностью на каждом шаге внешнего. Используй для таблиц, матриц, комбинаций. 🔹 СОВЕТ: не вкладывай глубоко (>3) — сложно читать.">🔍</button>
+            </div>
+            <div class="card-content">
+                <div class="visual-area">
+                    <button id="nestedLoopBtn" class="primary">📊 Показать таблицу 3x3</button>
+                    <div id="nestedOutput" class="output-console" style="background:#f8fafc; color:#0f172a; border: 1px solid #cbd5e1;">🤖 Матрица перемножения сгенерируется здесь.</div>
+                </div>
+                <pre><span style="color:#f472b6">for</span> i <span style="color:#f472b6">in</span> <span style="color:#7dd3fc">range</span>(1,4):
+    <span style="color:#f472b6">for</span> j <span style="color:#f472b6">in</span> <span style="color:#7dd3fc">range</span>(1,4):
+        <span style="color:#7dd3fc">print</span>(i*j, end=<span style="color:#a5f3c3">" "</span>)
+    <span style="color:#7dd3fc">print</span>()</pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3>✨ 9. Генератор списков</h3>
+                <button class="lupa-btn" data-tip="⚡ ЛАЙФХАК: [x**2 for x in range(10)] — это тот же цикл, но в одной строке! Быстрее и лаконичнее. 🔹 ФАКТ: генераторы списков работают на C-скорости, часто быстрее обычного for с append.">🔍</button>
+            </div>
+            <div class="card-content">
+                <div class="visual-area">
+                    <div class="btn-group">
+                        <input type="number" id="compN" value="6" style="width:70px; padding: 8px 12px; border-radius: 20px; border: 1px solid #cbd5e1; font-family: inherit;">
+                        <button id="listCompBtn" class="primary">Сгенерировать квадраты</button>
+                    </div>
+                    <div id="compOutput" class="output-console">🤖 Результат однострочного синтаксиса Python.</div>
+                </div>
+                <pre><span style="color:#94a3b8"># Классический цикл</span>
+squares = []
+<span style="color:#f472b6">for</span> x <span style="color:#f472b6">in</span> <span style="color:#7dd3fc">range</span>(1, 6):
+    squares.append(x**2)
+
+<span style="color:#94a3b8"># Генератор списка</span>
+squares = [x**2 <span style="color:#f472b6">for</span> x <span style="color:#f472b6">in</span> <span style="color:#7dd3fc">range</span>(1, 6)]</pre>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p><strong>🧠 Главная идея цикла for:</strong> «для каждого элемента из коллекции сделай действие». <br>
+        🔹 Список, строка, range, словарь — всё можно перебирать.<br>
+        🔹 <strong>break</strong> — выход, <strong>continue</strong> — пропуск шага.<br>
+        🔹 <strong>for..else</strong> — редкая, но мощная конструкция для поиска.<br>
+        📌 Нажимай 🔍 у каждого примера — там много полезных лайфхаков!
+        </p>
+    </footer>
+</div>
+
+<div id="tipPopup" class="tip-popup">💡</div>
+
+<script>
+    // Popup для луп
+    const popup = document.getElementById('tipPopup');
+    let timeoutId = null;
+    document.querySelectorAll('.lupa-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const tipText = btn.getAttribute('data-tip');
+            popup.innerHTML = tipText;
+            popup.classList.add('show');
+            if (timeoutId) clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                popup.classList.remove('show');
+            }, 4000);
+        });
+    });
+
+    // 1. Простой список
+    const simpleItems = ["🐱 Кошка", "🐶 Собака", "🐭 Мышь"];
+    let simpleInterval;
+    function renderSimpleSteps(active = -1) {
+        const cont = document.getElementById('simpleListContainer');
+        cont.innerHTML = '';
+        simpleItems.forEach((item, i) => {
+            const div = document.createElement('div');
+            div.className = `step-card ${i === active ? 'active-step' : ''}`;
+            div.innerText = item;
+            cont.appendChild(div);
+        });
+    }
+    function startSimpleAnim() {
+        if(simpleInterval) clearInterval(simpleInterval);
+        let step = 0;
+        renderSimpleSteps(-1);
+        document.getElementById('simpleOutput').innerHTML = "🏁 Запуск цикла for...<br>";
+        simpleInterval = setInterval(() => {
+            if(step < simpleItems.length) {
+                renderSimpleSteps(step);
+                let old = document.getElementById('simpleOutput').innerHTML;
+                document.getElementById('simpleOutput').innerHTML = old + `➡️ Шаг ${step+1}: animal = "${simpleItems[step]}" → вывод: ${simpleItems[step]}<br>`;
+                step++;
+            } else {
+                clearInterval(simpleInterval);
+                document.getElementById('simpleOutput').innerHTML += "✅ Цикл завершён!";
+                renderSimpleSteps(-1);
+                simpleInterval = null;
+            }
+        }, 700);
+    }
+    document.getElementById('animateSimpleForBtn').addEventListener('click', startSimpleAnim);
+    document.getElementById('resetSimpleBtn').addEventListener('click', () => {
+        if(simpleInterval) clearInterval(simpleInterval);
+        renderSimpleSteps(-1);
+        document.getElementById('simpleOutput').innerHTML = "🤖 Нажми 'Запустить цикл' чтобы начать.";
+    });
+    renderSimpleSteps();
+
+    // 2. range
+    let rangeInterval;
+    function animateRange() {
+        if(rangeInterval) clearInterval(rangeInterval);
+        const n = parseInt(document.getElementById('rangeCount').value);
+        document.getElementById('rangeCountValue').innerText = n;
+        const container = document.getElementById('rangeStepsContainer');
+        container.innerHTML = '';
+        for(let i=0; i<n; i++) {
+            const div = document.createElement('div'); div.className = 'step-card'; div.innerText = i; container.appendChild(div);
+        }
+        let idx = 0, out = `🔄 range(${n}) числа: `;
+        rangeInterval = setInterval(() => {
+            if(idx < n) {
+                const cards = container.querySelectorAll('.step-card');
+                cards.forEach(c => c.classList.remove('active-step'));
+                cards[idx].classList.add('active-step');
+                out += `${idx} `;
+                document.getElementById('rangeOutputText').innerHTML = out + `<br>➡️ Итерация ${idx+1}: i = ${idx}`;
+                idx++;
+            } else {
+                clearInterval(rangeInterval);
+                document.getElementById('rangeOutputText').innerHTML = out + `<br>✅ Цикл завершён. Итераций: ${n}.`;
+                container.querySelectorAll('.step-card').forEach(c => c.classList.remove('active-step'));
+            }
+        }, 600);
+    }
+    document.getElementById('runRangeAnimBtn').addEventListener('click', animateRange);
+    document.getElementById('rangeCount').addEventListener('input', (e) => document.getElementById('rangeCountValue').innerText = e.target.value);
+
+    // 3. break/continue
+    function renderCtrlSteps(nums, active) {
+        const cont = document.getElementById('controlStepsContainer');
+        cont.innerHTML = '';
+        nums.forEach((n, i) => {
+            const div = document.createElement('div'); div.className = `step-card ${i === active ? 'active-step' : ''}`; div.innerText = n; cont.appendChild(div);
+        });
+    }
+    let ctrlInt;
+    function runCtrl(type) {
+        if(ctrlInt) clearInterval(ctrlInt);
+        const nums = [1,2,3,4,5];
+        let log = `🔁 Цикл 1..5. ${type === 'continue' ? 'continue (пропуск 3)' : 'break (стоп на 3)'}:<br>`;
+        let step = 0;
+        renderCtrlSteps(nums, -1);
+        const interval = setInterval(() => {
+            if(step >= nums.length) {
+                clearInterval(interval);
+                document.getElementById('controlOutput').innerHTML = log + "🏁 Цикл завершён.";
+                renderCtrlSteps(nums, -1);
+                return;
+            }
+            let val = nums[step];
+            if(val === 3) {
+                if(type === 'continue') {
+                    log += `🌀 continue: число 3 пропущено.<br>`;
+                    renderCtrlSteps(nums, step);
+                    setTimeout(() => renderCtrlSteps(nums, -1), 300);
+                    step++;
+                    return;
+                } else {
+                    log += `⛔ break: на 3 цикл остановлен.<br>`;
+                    renderCtrlSteps(nums, step);
+                    setTimeout(() => renderCtrlSteps(nums, -1), 300);
+                    clearInterval(interval);
+                    document.getElementById('controlOutput').innerHTML = log + "🔚 Цикл прерван.";
+                    return;
+                }
+            }
+            log += `✅ Итерация ${step+1}: выводим ${val}<br>`;
+            renderCtrlSteps(nums, step);
+            setTimeout(() => renderCtrlSteps(nums, -1), 250);
+            step++;
+            document.getElementById('controlOutput').innerHTML = log;
+        }, 700);
+        ctrlInt = interval;
+    }
+    document.getElementById('continueDemoBtn').addEventListener('click', () => runCtrl('continue'));
+    document.getElementById('breakDemoBtn').addEventListener('click', () => runCtrl('break'));
+
+    // 4. Фильтр
+    const filterNums = [3,8,11,14,5,20];
+    function animateFilter() {
+        let idx = 0;
+        const cont = document.getElementById('filterStepsContainer');
+        cont.innerHTML = '';
+        filterNums.forEach(v => { const d = document.createElement('div'); d.className = 'step-card'; d.innerText = v; cont.appendChild(d); });
+        let log = "🔍 Проверка: if n % 2 == 0<br>";
+        const inter = setInterval(() => {
+            if(idx < filterNums.length) {
+                const cards = cont.querySelectorAll('.step-card');
+                cards.forEach(c => c.classList.remove('active-step', 'highlight-match'));
+                cards[idx].classList.add('active-step');
+                let val = filterNums[idx];
+                if(val % 2 === 0) {
+                    cards[idx].classList.add('highlight-match');
+                    log += `✅ ${val} — чётное → выводим!<br>`;
+                } else log += `❌ ${val} — нечётное → пропускаем.<br>`;
+                document.getElementById('filterOutput').innerHTML = log;
+                idx++;
+            } else {
+                clearInterval(inter);
+                log += "✨ Чётные: 8,14,20";
+                document.getElementById('filterOutput').innerHTML = log;
+                cont.querySelectorAll('.step-card').forEach(c => c.classList.remove('active-step', 'highlight-match'));
+            }
+        }, 700);
+    }
+    document.getElementById('runFilterAnimBtn').addEventListener('click', animateFilter);
+
+    // 5. Сумма
+    const sumArr = [4,7,2,9,5];
+    function animateSum() {
+        let idx = 0, total = 0;
+        const cont = document.getElementById('sumStepsContainer');
+        cont.innerHTML = '';
+        sumArr.forEach(v => { const d = document.createElement('div'); d.className = 'step-card'; d.innerText = v; cont.appendChild(d); });
+        let log = "💰 Начальная сумма = 0<br>";
+        const inter = setInterval(() => {
+            if(idx < sumArr.length) {
+                const cards = cont.querySelectorAll('.step-card');
+                cards.forEach(c => c.classList.remove('active-step'));
+                cards[idx].classList.add('active-step');
+                total += sumArr[idx];
+                log += `➕ +${sumArr[idx]} → сумма = ${total}<br>`;
+                document.getElementById('sumOutput').innerHTML = log;
+                idx++;
+            } else {
+                clearInterval(inter);
+                log += `🎉 Итог: ${total}`;
+                document.getElementById('sumOutput').innerHTML = log;
+                cont.querySelectorAll('.step-card').forEach(c => c.classList.remove('active-step'));
+            }
+        }, 700);
+    }
+    document.getElementById('runSumAnimBtn').addEventListener('click', animateSum);
+
+    // 6. Строка
+    function animateString() {
+        let word = document.getElementById('userWord').value;
+        if(!word) word = "Python";
+        const cont = document.getElementById('stringStepsContainer');
+        cont.innerHTML = '';
+        for(let ch of word) { const d = document.createElement('div'); d.className = 'step-card'; d.innerText = ch; cont.appendChild(d); }
+        let idx = 0, log = `📖 Строка "${word}":<br>`;
+        const inter = setInterval(() => {
+            if(idx < word.length) {
+                const cards = cont.querySelectorAll('.step-card');
+                cards.forEach(c => c.classList.remove('active-step'));
+                cards[idx].classList.add('active-step');
+                log += `🔡 '${word[idx]}' (код ${word.charCodeAt(idx)})<br>`;
+                document.getElementById('stringOutput').innerHTML = log;
+                idx++;
+            } else {
+                clearInterval(inter);
+                log += `✅ Всего символов: ${word.length}`;
+                document.getElementById('stringOutput').innerHTML = log;
+                cont.querySelectorAll('.step-card').forEach(c => c.classList.remove('active-step'));
+            }
+        }, 550);
+    }
+    document.getElementById('runStringAnimBtn').addEventListener('click', animateString);
+
+    // 7. Поиск
+    document.getElementById('searchBtn').addEventListener('click', () => {
+        const data = [10,23,42,55,7];
+        let found = false, log = "🔎 Поиск 42: <br>";
+        for(let i=0; i<data.length; i++) {
+            log += `  проверяем ${data[i]}... `;
+            if(data[i] === 42) {
+                log += `✅ НАШЛИ! break<br>`;
+                found = true;
+                break;
+            } else log += `нет<br>`;
+        }
+        if(!found) log += `  else: 42 не найдено.`;
+        else log += `🎯 Цикл прерван, else не выполнен.`;
+        document.getElementById('searchOutput').innerHTML = log;
+    });
+
+    // 8. Вложенные циклы
+    document.getElementById('nestedLoopBtn').addEventListener('click', () => {
+        let html = "<strong>Таблица 3x3 (вложенные for):</strong><br><div style='display:flex; flex-direction:column; gap:6px; margin-top:12px'>";
+        for(let i=1; i<=3; i++) {
+            let row = "<div style='display:flex; gap:12px; justify-content:center'>";
+            for(let j=1; j<=3; j++) row += `<span style='background:#e2e8f0; padding:6px 12px; border-radius:16px; font-weight:bold'>${i}×${j}=${i*j}</span>`;
+            row += "</div>";
+            html += row;
+        }
+        html += "</div>";
+        document.getElementById('nestedOutput').innerHTML = html;
+    });
+
+    // 9. Генератор списков
+    document.getElementById('listCompBtn').addEventListener('click', () => {
+        let n = parseInt(document.getElementById('compN').value);
+        if(isNaN(n) || n<1) n = 5;
+        let squares = [];
+        for(let i=1; i<=n; i++) squares.push(i*i);
+        document.getElementById('compOutput').innerHTML = `🔹 Обычный цикл: квадраты = [${squares.join(', ')}]<br>🔹 Генератор: [x**2 for x in range(1, ${n+1})] → [${squares.join(', ')}]`;
+    });
+</script>
+</body>
+</html>
